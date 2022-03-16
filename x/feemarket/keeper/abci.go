@@ -12,14 +12,11 @@ import (
 
 // BeginBlock updates base fee
 func (k *Keeper) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
-	baseFee := k.CalculateBaseFee(ctx)
+	// baseFee := k.CalculateBaseFee(ctx)
+	params := k.GetParams(ctx)
+	baseFee := params.BaseFee.BigInt()
 
-	// return immediately if base fee is nil
-	if baseFee == nil {
-		return
-	}
-
-	k.SetBaseFee(ctx, baseFee)
+	k.SetBaseFee(ctx, params.BaseFee.BigInt())
 
 	defer func() {
 		telemetry.SetGauge(float32(baseFee.Int64()), "feemarket", "base_fee")
