@@ -176,7 +176,10 @@ func (b *Backend) GetBalance(address common.Address, blockNrOrHash rpctypes.Bloc
 
 	// balance can only be negative in case of pruned node
 	if val.IsNegative() {
-		return nil, errors.New("couldn't fetch balance. Node state is pruned")
+		b.logger.Debug("couldn't fetch balance. Node state is pruned", "val", val)
+		a, _ := sdkmath.NewIntFromString("0")
+		return (*hexutil.Big)(a.BigInt()), nil
+		// return nil, errors.New("couldn't fetch balance. Node state is pruned")
 	}
 
 	return (*hexutil.Big)(val.BigInt()), nil
